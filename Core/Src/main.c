@@ -19,6 +19,11 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "i2c.h"
+#include "usart.h"
+#include "gpio.h"
+#include "oled.h"
+#include "fonts.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -91,6 +96,32 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  bool begin = true;
+  int digit;
+  int number = 0;
+  char display[10];
+  while(!begin) { // read timer
+	  // read digit
+	  if (digit == -1) begin = false;
+	  else if (digit == -2) nuber = 0; // clear input
+	  else number = number * 10 + digit;
+	  sprintf(result, "%i", number);
+
+	  // show digit on screen
+	  oled_SetCursor(0,0);
+	  oled_WriteString(result,Font_11x18,White);
+	  oled_UpdateScreen();
+  }
+  while (number > 0) {
+	  HAL_Delay(999);
+
+	  // update number on screen
+	  sprintf(result, "%i", --number);
+	  oled_SetCursor(0,0);
+	  oled_WriteString(result,Font_11x18,White);
+	  oled_UpdateScreen();
+  }
+  // play music
   while (1)
   {
 
