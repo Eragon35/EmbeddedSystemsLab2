@@ -2,6 +2,7 @@
 #include "tim.h"
 
 
+
 void Buzzer_Init (void) {
 	HAL_TIM_OC_Start(&htim2,TIM_CHANNEL_1);
 	HAL_TIM_PWM_Init(&htim2);

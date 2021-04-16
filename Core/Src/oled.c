@@ -72,7 +72,7 @@ void oled_UpdateScreen(void) {
 		oled_WriteCommand(0x00);
 		oled_WriteCommand(0x10);
 
-		HAL_I2C_Mem_Write(&hi2c1,OLED_I2C_ADDR,0x40,1,&OLED_Buffer[OLED_WIDTH * i],OLED_WIDTH,25);
+		HAL_I2C_Mem_Write(&hi2c1,OLED_I2C_ADDR,0x40,1,&OLED_Buffer[OLED_WIDTH * i],OLED_WIDTH,100);
 	}
 }
 
@@ -132,6 +132,7 @@ char oled_WriteChar(char ch, FontDef Font, OLED_COLOR color) {
 	return ch;
 }
 
+
 char oled_WriteString(char* str, FontDef Font, OLED_COLOR color) {
 	while (*str) {
 		if (oled_WriteChar(*str, Font, color) != *str) {
@@ -145,12 +146,4 @@ char oled_WriteString(char* str, FontDef Font, OLED_COLOR color) {
 void oled_SetCursor(uint8_t x, uint8_t y) {
 	OLED.CurrentX = x;
 	OLED.CurrentY = y;
-}
-
-void oled_DrawBitmap(uint8_t* bmp, uint8_t x, uint8_t y, uint8_t width, uint8_t height) {
-	for (int h = 0; h < height; h++) {
-		for (int w = 0; w < width; w++) {
-			oled_DrawPixel(w+x, h+y, bmp[w+h*width]);
-		}
-	}
 }

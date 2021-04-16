@@ -10,7 +10,7 @@ RM := rm -rf
 # All of the sources participating in the build are defined here
 -include sources.mk
 -include Drivers/STM32F4xx_HAL_Driver/Src/subdir.mk
--include Core/Startup/subdir.mk
+-include Core/startup/subdir.mk
 -include Core/Src/subdir.mk
 -include subdir.mk
 -include objects.mk
@@ -35,34 +35,34 @@ $(wildcard ../makefile.init) \
 $(wildcard ../makefile.targets) \
 
 
-BUILD_ARTIFACT_NAME := embedded_systems_mc2
+BUILD_ARTIFACT_NAME := SDK_Keyboard
 BUILD_ARTIFACT_EXTENSION := elf
 BUILD_ARTIFACT_PREFIX := 
 BUILD_ARTIFACT := $(BUILD_ARTIFACT_PREFIX)$(BUILD_ARTIFACT_NAME).$(BUILD_ARTIFACT_EXTENSION)
 
 # Add inputs and outputs from these tool invocations to the build variables 
 EXECUTABLES += \
-embedded_systems_mc2.elf \
+SDK_Keyboard.elf \
 
 SIZE_OUTPUT += \
 default.size.stdout \
 
 OBJDUMP_LIST += \
-embedded_systems_mc2.list \
+SDK_Keyboard.list \
 
-OBJCOPY_BIN += \
-embedded_systems_mc2.bin \
+OBJCOPY_HEX += \
+SDK_Keyboard.hex \
 
 
 # All Target
 all: main-build
 
 # Main-build Target
-main-build: embedded_systems_mc2.elf secondary-outputs
+main-build: SDK_Keyboard.elf secondary-outputs
 
 # Tool invocations
-embedded_systems_mc2.elf: $(OBJS) $(USER_OBJS) C:\Users\Antipin\STM32CubeIDE\workspace_1.6.1\embedded_systems_mc2.zip_expanded\embedded_systems_mc2\STM32F427VITX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "embedded_systems_mc2.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\Antipin\STM32CubeIDE\workspace_1.6.1\embedded_systems_mc2.zip_expanded\embedded_systems_mc2\STM32F427VITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="embedded_systems_mc2.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+SDK_Keyboard.elf: $(OBJS) $(USER_OBJS) ../STM32F407VGTx_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "SDK_Keyboard.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"../STM32F407VGTx_FLASH.ld" --specs=nosys.specs -Wl,-Map="SDK_Keyboard.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
@@ -71,13 +71,13 @@ default.size.stdout: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
 	@echo 'Finished building: $@'
 	@echo ' '
 
-embedded_systems_mc2.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-objdump -h -S $(EXECUTABLES) > "embedded_systems_mc2.list"
+SDK_Keyboard.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-objdump -h -S $(EXECUTABLES) > "SDK_Keyboard.list"
 	@echo 'Finished building: $@'
 	@echo ' '
 
-embedded_systems_mc2.bin: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-objcopy  -O binary $(EXECUTABLES) "embedded_systems_mc2.bin"
+SDK_Keyboard.hex: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-objcopy  -O ihex $(EXECUTABLES) "SDK_Keyboard.hex"
 	@echo 'Finished building: $@'
 	@echo ' '
 
@@ -86,7 +86,7 @@ clean:
 	-$(RM) *
 	-@echo ' '
 
-secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST) $(OBJCOPY_BIN)
+secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST) $(OBJCOPY_HEX)
 
 fail-specified-linker-script-missing:
 	@echo 'Error: Cannot find the specified linker script. Check the linker settings in the build configuration.'
