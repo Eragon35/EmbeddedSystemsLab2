@@ -115,17 +115,23 @@ int main(void)
 
 	  // show digit on screen
 	  oled_SetCursor(0,0);
-	  oled_WriteString(result,Font_11x18,White);
+	  oled_WriteString("          ",Font_11x18,White);
+	  oled_UpdateScreen();
+	  oled_SetCursor(0,0);
+	  oled_WriteString(display,Font_11x18,White);
 	  oled_UpdateScreen();
   }
   while (number > 0) {
-	  HAL_Delay(999);
+	 HAL_Delay(999);
 
-	  // update number on screen
-	  sprintf(display, "%i", --number);
-	  oled_SetCursor(0,0);
-	  oled_WriteString(result,Font_11x18,White);
+  	  // update number on screen
+  	  sprintf(result, "%i", --number);
+  	  oled_SetCursor(0,0);
+	  oled_WriteString("          ",Font_11x18,White);
 	  oled_UpdateScreen();
+  	  oled_SetCursor(0,0);
+  	  oled_WriteString(result,Font_11x18,White);
+  	  oled_UpdateScreen();
   }
   // play music
   uint32_t megalovania_melody[] = {
