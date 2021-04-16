@@ -109,9 +109,9 @@ int main(void)
   while(!begin) { // read timer
 	  // read digit
 	  if (digit == -1) begin = false;
-	  else if (digit == -2) nuber = 0; // clear input
+	  else if (digit == -2) number = 0; // clear input
 	  else number = number * 10 + digit;
-	  sprintf(result, "%i", number);
+	  sprintf(display, "%i", number);
 
 	  // show digit on screen
 	  oled_SetCursor(0,0);
@@ -122,7 +122,7 @@ int main(void)
 	  HAL_Delay(999);
 
 	  // update number on screen
-	  sprintf(result, "%i", --number);
+	  sprintf(display, "%i", --number);
 	  oled_SetCursor(0,0);
 	  oled_WriteString(result,Font_11x18,White);
 	  oled_UpdateScreen();
