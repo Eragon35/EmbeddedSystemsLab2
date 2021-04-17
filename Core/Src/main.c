@@ -175,7 +175,7 @@ int calc_digit(int row, int binary_key) {
 	if (binary_key == 0x01) key = 3;
 	if (binary_key == 0x02) key = 2;
 	if (binary_key == 0x04) key = 1;
-	return 3 * (row - 1) + key;
+	return 3 * (3-row ) + key;
 }
 
 uint32_t read_number() {
