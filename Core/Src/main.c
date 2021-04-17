@@ -36,6 +36,8 @@
 
 #include "tim.h"
 #include "stdio.h"
+#include "stdbool.h"
+#include "inttypes.h"
 
 /* USER CODE END Includes */
 
@@ -66,6 +68,7 @@ void SystemClock_Config(void);
 void KB_Test( void );
 void OLED_KB( uint8_t OLED_Keys[]);
 void oled_Reset( void );
+uint32_t read_number();
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -116,34 +119,33 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-
+  	int Row[4] = {0xF7, 0x7B, 0x3D, 0x1E};
   	int begin = 1;
     int digit;
-    int number = 3;
+    uint32_t number = read_number();
     char result[10];
-    while(!begin) { // read timer
-  	  // read digit
-  	  if (digit == -1) begin = 0;
-  	  else if (digit == -2) number = 0; // clear input
-  	  else number = number * 10 + digit;
-  	  sprintf(result, "%i", number);
-
-  	  // show digit on screen
-  	  oled_SetCursor(0,0);
-  	  oled_WriteString(result,Font_11x18,White);
-  	  oled_UpdateScreen();
-    }
+//    while(!begin) { // read timer
+//  	  // read digit
+//  	  if (digit == -1) begin = 0;
+//  	  else if (digit == -2) number = 0; // clear input
+//  	  else number = number * 10 + digit;
+//  	  sprintf(result, "%i", number);
+//
+//  	  // show digit on screen
+//  	  oled_SetCursor(0,0);
+//  	  oled_WriteString(result,Font_11x18,White);
+//  	  oled_UpdateScreen();
+//    }
     while (number > 0) {
-  	  HAL_Delay(999);
-
   	  // update number on screen
-  	  sprintf(result, "%i", number--);
+  	  sprintf(result, "%" PRIu32, number--);
   	  oled_SetCursor(0,0);
 	  oled_WriteString("          ",Font_11x18,White);
 	  oled_UpdateScreen();
   	  oled_SetCursor(0,0);
   	  oled_WriteString(result,Font_11x18,White);
   	  oled_UpdateScreen();
+  	  HAL_Delay(999);
     }
      //play music
 
@@ -166,6 +168,62 @@ int main(void)
       /* USER CODE BEGIN 3 */
     }
   /* USER CODE END 3 */
+}
+
+int calc_digit(int row, int binary_key) {
+	int key;
+	if (binary_key == 0x01) key = 3;
+	if (binary_key == 0x02) key = 2;
+	if (binary_key == 0x04) key = 1;
+	return 3 * (row - 1) + key;
+}
+
+uint32_t read_number() {
+	int key;
+	int Row[4] = {0xF7, 0x7B, 0x3D, 0x1E};
+
+	char result[9];
+
+	uint32_t number = 0;
+
+	_Bool changed = 1;
+
+	while (1) {
+		for (int i = 0; i < 4; ++i) {
+			key = Check_Row(Row[i]);
+			if (key == 0) continue;
+			if (i == 0) {
+				switch (key) {
+					case 0x04:
+						// start
+						return number;
+						break;
+					case 0x02:
+						// 0
+						if (number/100000000 != 0) continue;
+						number *= 10;
+						break;
+					case 0x01:
+						// reset
+						oled_Reset();
+						number = 0;
+						break;
+				}
+			} else {
+				if (number/100000000 != 0) continue;
+				number = 10 * number + calc_digit(i, key);
+			}
+			changed = 1;
+		}
+		if (changed) {
+			sprintf(result, "%" PRIu32, number);
+			oled_SetCursor(0,0);
+			oled_WriteString(result,Font_11x18,White);
+			oled_UpdateScreen();
+			changed = 0;
+		}
+		HAL_Delay(50);
+	}
 }
 
 /**
